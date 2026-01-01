@@ -1,1 +1,49 @@
-theme: jekyll-theme-merlot
+# Site settings
+title: Perf Bits
+subtitle: "Articles on software performance"
+description: "A collection of articles exploring software performance optimization techniques."
+url: "https://ttsugriy.github.io"
+baseurl: "/perf-bits"
+repository: "ttsugriy/perf-bits"
+
+# Theme
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+minimal_mistakes_skin: "dark"
+
+# Plugins
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+# Author
+author:
+  name: "Taras Tsugrii"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/ttsugriy"
+
+# Reading files
+include:
+  - _pages
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "single"
+      author_profile: true
+      toc: true
+      toc_sticky: true
+
+# Markdown processing
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+
+# Exclude from processing
+exclude:
+  - README.md
+  - LICENSE
+  - "*.jl"

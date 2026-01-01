@@ -1,7 +1,9 @@
-# Commutativity: Why Transformers Need Positional Encodings
-
-*And other consequences of order not mattering*
-
+---
+layout: single
+title: "Commutativity: Why Transformers Need Positional Encodings"
+excerpt: "And other consequences of order not mattering"
+toc: true
+toc_sticky: true
 ---
 
 Here's a question that seems too simple to be interesting:
