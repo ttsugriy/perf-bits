@@ -1,10 +1,9 @@
-<!-- MathJax for LaTeX equations -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- MathJax configuration - MUST be before loading the script -->
 <script>
   window.MathJax = {
     tex: {
-      inlineMath: [['$', '$']],
-      displayMath: [['$$', '$$']],
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
       processEscapes: true,
       processEnvironments: true
     },
@@ -14,3 +13,4 @@
     }
   };
 </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

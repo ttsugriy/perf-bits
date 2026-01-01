@@ -41,7 +41,8 @@ defaults:
 # Markdown processing
 markdown: kramdown
 kramdown:
-  math_engine: mathjax
+  math_engine: null
+  syntax_highlighter: rouge
 
 # Exclude from processing
 exclude:
