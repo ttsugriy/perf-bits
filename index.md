@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="associativity.html">The One Property That Makes FlashAttention Possible</a></h3>
+    <p class="archive__item-excerpt">Associativity is the license to parallelize, chunk, and stream.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="virtual-functions-strike-again.jl.html">Virtual Functions Strike Again</a></h3>
     <p class="archive__item-excerpt">Or too much dynamism is a thing. Exploring virtual dispatch overhead and the <code>-fstrict-vtable-pointers</code> optimization.</p>
   </div>
