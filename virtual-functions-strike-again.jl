@@ -9,9 +9,9 @@ md"""
 # Virtual functions strike again.
 ## Or too much dynamism is a thing.
 
-Much has already been written about virtual dispatch overhead. They take up more space, add memory indirection, prevent most compiler optimizations and as such are claerly not the best choice when it comes to performance.
+Much has already been written about virtual dispatch overhead. They take up more space, add memory indirection, prevent most compiler optimizations, and as such are clearly not the best choice when it comes to performance.
 
-But as if the list above is not bad enough, there is another less known fact about them - since virtual table pointers can be changed, compilers, to ensure that every virtual call is dispatched to the right function have to resolve them on each invocation.
+But as if the list above is not bad enough, there is another lesser-known fact about them - since virtual table pointers can be changed, compilers have to resolve them on each invocation to ensure that every virtual call is dispatched to the right function.
 
 We can clearly see this in the example below
 """
@@ -23,11 +23,11 @@ html"""
 
 # ╔═╡ 79828898-67a5-494b-bc39-9ef86f5ec676
 md"""
-But how often do you override your virtual table pointers? Probably not that often. If only there was a way to let compiler know this...
+But how often do you overwrite your virtual table pointers? Probably not that often. If only there was a way to let the compiler know this...
 
-Fortunately, there is way and it boils down to a simple copmiler flag `-fstrict-vtable-pointers`. It's a promise to a compiler that the virtual vptr remains invariant during object's lifetime. This means that compiler is allowed to reuse vptr instead of reloading it on each invocation.
+Fortunately, there is a way and it boils down to a simple compiler flag `-fstrict-vtable-pointers`. It's a promise to the compiler that the vptr (virtual table pointer) remains invariant during the object's lifetime. This means the compiler is allowed to reuse the vptr instead of reloading it on each invocation.
 
-The difference is exactly what we'd expect
+The difference is exactly what we'd expect:
 """
 
 # ╔═╡ 941d13d6-db79-49ac-a02a-6d795d7bab0c
@@ -37,7 +37,7 @@ html"""
 
 # ╔═╡ 00e80dda-6c3e-4cc8-9e49-eddee7bd02c1
 md"""
-Runtime performance impact of this optimization depends on whether virtual calls are on a hot path and your branch predictor, so as always, don't forget to benchmark before applying it.
+The runtime performance impact of this optimization depends on whether virtual calls are on a hot path and on your branch predictor, so as always, don't forget to benchmark before applying it.
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001

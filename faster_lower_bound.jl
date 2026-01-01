@@ -21,11 +21,11 @@ md"""
 # Speeding up Julia's searchsortedfirst.
 ## Or even standard libraries can be improved.
 
-Most of my articles so far focused on performance problems I've actually experienced, but I had to simplify or edit them to a point where they no longer look like something that can happen in real world.
+Most of my articles so far focused on performance problems I've actually experienced, but I had to simplify or edit them to a point where they no longer look like something that can happen in the real world.
 
-To make things slightly more interesting, for this article, I've decided to take a look at actual Julia code in its Sort package. Since, `lower_bound` is one of the algorithms I used most frequently in C++, I wanted to see how it's implemented in Julia.
+To make things slightly more interesting, for this article, I've decided to take a look at actual Julia code in its Sort package. Since `lower_bound` is one of the algorithms I use most frequently in C++, I wanted to see how it's implemented in Julia.
 
-Apart from its name `searchsortedfirst` it looks [as expected](https://github.com/JuliaLang/julia/blob/master/base/sort.jl#L172-L187)
+Apart from its name (`searchsortedfirst`), it looks [as expected](https://github.com/JuliaLang/julia/blob/master/base/sort.jl#L172-L187):
 ```julia
 # index of the first value of vector a that is greater than or equal to x;
 # returns lastindex(v)+1 if x is greater than all values in v.
@@ -46,23 +46,23 @@ end
 ```
 
 Some of my initial observations included:
-- the search spaced is extended to $[lo-1, hi+1]$
+- the search space is extended to $[lo-1, hi+1]$
 - each iteration computes `midpoint`
 - the range is narrowed by setting `lo` or `hi` to `m`.
 
 So what can we do instead?
 
 - let's call the returned value $x$ and based on the docs $x \in [0, lastindex(v) + 1]$, so the range we're interested in is $[lo, hi+1]$.
-- the `midpoint`'s implementation does a classical overflow-safe
+- the `midpoint` implementation does a classical overflow-safe computation:
 ```julia
 # This implementation of `midpoint` is performance-optimized but safe
 # only if `lo <= hi`.
 midpoint(lo::T, hi::T) where T<:Integer = lo + ((hi - lo) >>> 0x01)
 midpoint(lo::Integer, hi::Integer) = midpoint(promote(lo, hi)...)
-``` which we can get rid of by tracking explicit range length
-- on etablishing that the `v[m]` is smaller than `x` we can exclude `m` from the range and narrow it down to $[m + 1, hi]$ instead.
+``` which we can avoid by tracking an explicit range length
+- on establishing that `v[m]` is smaller than `x` we can exclude `m` from the range and narrow it down to $[m + 1, hi]$ instead.
 
-Putting all of these things together yeilds an implementation below
+Putting all of these things together yields the implementation below:
 """
 
 # ╔═╡ d870da60-064f-11ed-2744-810f2b87b124

@@ -19,7 +19,7 @@ Some time passes and we accidentally discover a nicer version using [random.rand
 ```python
 random.randint(0, 128)
 ```
-Much better! Let’s push this improved version to production… Strange, we start getting complains about performance regression. How could it be? Let’s take a look
+Much better! Let's push this improved version to production... Strange, we start getting complaints about performance regression. How could that be? Let's take a look:
 ```
 In [11]: %timeit int(random.random() * 129)
 209 ns ± 1.88 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
@@ -37,7 +37,7 @@ _random_Random_random_impl(RandomObject *self)
     return PyFloat_FromDouble((a*67108864.0+b)*(1.0/9007199254740992.0));
 }
 ```
-So `random.random` is implemented natively in C, but what about `random.randint`? Looks like it's [implemented in Python](https://github.com/python/cpython/blob/a2fbc511985f77c16c0f4a6fc6d3da9ab81a86b7/Lib/random.py#L287-L332)
+So `random.random` is implemented natively in C, but what about `random.randint`? It turns out it's [implemented in Python](https://github.com/python/cpython/blob/a2fbc511985f77c16c0f4a6fc6d3da9ab81a86b7/Lib/random.py#L287-L332):
 ```python
     def randrange(self, start, stop=None, step=_ONE):
         \"""Choose a random item from range(stop) or range(start, stop[, step]).
@@ -84,9 +84,9 @@ So `random.random` is implemented natively in C, but what about `random.randint`
 
         return self.randrange(a, b+1)
 ```
-As such, despite having an API that looks ideal for generating random integers, unfortunately, its implementation leaves a significant performance gap. I normally recommend using most idiomatic APIs unless there is a very strong reason not to, but ultimately the choice should be made based on business priorities.
+As such, despite having an API that looks ideal for generating random integers, unfortunately its implementation leaves a significant performance gap. I normally recommend using the most idiomatic APIs unless there is a very strong reason not to, but ultimately the choice should be made based on business priorities.
 
-Btw, since I'm writing this notebook in Julia, why not measure its performance for generating random integer?
+Btw, since I'm writing this notebook in Julia, why not measure its performance for generating a random integer?
 """
 
 # ╔═╡ 3cf6f73c-5e51-4101-a51d-dbd897f192fb

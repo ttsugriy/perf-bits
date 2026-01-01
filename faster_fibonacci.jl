@@ -25,10 +25,10 @@ map(fib_rec, 0:10)
 
 # ╔═╡ 4b86c389-8e0d-467a-af7d-5425ec6f7272
 md"""
-Enough has already been written about why it's very inefficient and its easy to understand why from the call chain
+Enough has already been written about why it's very inefficient and it's easy to understand why from the call chain
 ![call chain](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fi.stack.imgur.com%2F59Rpw.png&f=1&nofb=1)
-There are lots of repeated computations that result in unsutisfactory exponential runtime ($O(\varphi^n))$, where $\varphi$ is the golden ratio, to be exact).
-That's where most lectures go into ways to use dynamic programming techniques like memoization or bottom up tabulation to reach much better $(O(N))$ time complexity.
+There are lots of repeated computations that result in unsatisfactory exponential runtime ($O(\varphi^n)$, where $\varphi$ is the golden ratio, to be exact).
+That's where most lectures go into ways to use dynamic programming techniques like memoization or bottom-up tabulation to achieve much better $O(n)$ time complexity.
 """
 
 # ╔═╡ d47c1b03-dc1b-47c7-a92e-1f4c8e405988
@@ -81,7 +81,7 @@ F_1\\
 F_2
 \end{bmatrix}
 ```
-By repeating this process, we can compute any number of want.
+By repeating this process, we can compute any number we want.
 ```math
 \begin{bmatrix}
 0\\
@@ -175,7 +175,7 @@ BenchmarkTools.@benchmark fib_fast(20)
 # ╔═╡ 0f5e361c-4473-41ef-9c16-c43e77b18ece
 md"""
 Oh no, looks like all of our effort resulted in ~600X regression over our iterative implementation! What went wrong?
-In theory, constant factors don't matter, but in practice... Extra complexity for dealing with matrices adds so much overhead that we have to go to much larger numbers to finally reap the benefits of logarithmic complexity.
+In theory, constant factors don't matter, but in practice they do. Extra complexity for dealing with matrices adds so much overhead that we have to go to much larger numbers to finally reap the benefits of logarithmic complexity.
 """
 
 # ╔═╡ 5823dea2-153d-41bf-ae31-653576663239
@@ -186,7 +186,7 @@ BenchmarkTools.@benchmark fib_bu(10000)
 
 # ╔═╡ 22f5de2f-287b-4935-b60e-a64cb3020e49
 md"""
-And sure enough, for 10000, matrix version is ~10X faster than $O(N)$ iterative implementation.
+And sure enough, for n=10000, the matrix version is ~10X faster than the $O(n)$ iterative implementation.
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001

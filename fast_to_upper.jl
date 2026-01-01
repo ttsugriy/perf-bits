@@ -9,7 +9,7 @@ md"""
 # Faster toupper implementation.
 ## Or binary trickery for the win.
 
-Even though I'm not a fan of strings, sometimes I have to get over them and find ways to minimize their damage. Recently I've discovered an interesting way to implement `toupper` using a single bit operation.
+Even though I'm not a fan of strings, sometimes I have to deal with them and find ways to minimize their overhead. Recently I've discovered an interesting way to implement `toupper` using a single bit operation.
 
 Let's take a look at the binary representation of the lowercase letters:
 """
@@ -27,7 +27,7 @@ map(bitstring, 'A':'Z')
 
 # ╔═╡ b9769222-1e39-4738-9fa9-001c7802a9de
 md"""
-Interesting. They look almost identical with just a single difference - they don't have a 3 most significant bit set. So, it seems like we can turn a lowercase letter into uppercase by unsetting 3rd most significant bit. To do this, we can use the one more observation:
+Interesting. They look almost identical with just a single difference - they don't have the 6th bit (counting from the right, starting at 1) set. So, it seems like we can turn a lowercase letter into uppercase by clearing this bit. To do this, we can make one more observation:
 """
 
 # ╔═╡ 354d2f1c-5ce6-48a7-81aa-8ed5787717cc
@@ -35,7 +35,7 @@ bitstring('_')
 
 # ╔═╡ 6fd154d2-66c4-4fd9-b221-8ad6b5a0115d
 md"""
-Which covers all lowercase letter bits but has 0 as the 3rd most significant unset. That's all we need to implement a `to_upper` function:
+The underscore character `'_'` has a binary representation that covers all the bits we care about in lowercase letters, but with the 6th bit unset. That's all we need to implement a `to_upper` function:
 """
 
 # ╔═╡ 3c445aec-107a-11ed-34fc-4dabae37652b
@@ -51,7 +51,7 @@ html"""<iframe width="800px" height="600px" src="https://godbolt.org/e#z:OYLghAF
 
 # ╔═╡ 1b5b3f50-2479-4662-add9-e4f63625fe77
 md"""
-So the implementation boilds down to `and     al, 95` which can hardly be more efficient. But does it matter in practice?
+So the implementation boils down to `and al, 95` which can hardly be more efficient. But does it matter in practice?
 """
 
 # ╔═╡ 46358983-a701-405f-9f75-6d021629694a

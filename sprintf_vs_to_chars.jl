@@ -21,11 +21,11 @@ html"""
 
 # ╔═╡ e95a8a43-090b-4770-90f6-2dda73f93328
 md"""
-There are serveal things to note:
-- `std::to_chars` is safe by default - it makes sure that resulting string does not exceed provided buffer and returns signals error conditions, if any
-- there are a few more assembly instructions involved in setting up a call to `sprintf` but nothing suspicious.
+There are several things to note:
+- `std::to_chars` is safe by default - it ensures that the resulting string does not exceed the provided buffer and signals error conditions, if any
+- there are a few more assembly instructions involved in setting up a call to `sprintf`, but nothing suspicious.
 
-But how do these functions perform in benchmark?
+But how do these functions perform in a benchmark?
 """
 
 # ╔═╡ 74fe7549-f350-45aa-9f85-aca2aab1818d
@@ -39,10 +39,10 @@ Ouch, `sprintf` is 2.8X slower! That's a huge difference for such a small amount
 
 Unfortunately, I don't have a setup for profiling these functions, so I can only speculate, but there are at least 2 suspects:
 - `sprintf` is locale aware and, for example, [uses](https://github.com/lattera/glibc/blob/master/stdio-common/vfprintf.c#L1412) `LC_NUMERIC` to resolve thousands separator
-- `sprintf` has a lot of complexity and shares its implementation with a large number of functions, including `fprintf` which works with file descriptors instead of string buffers directly. While such unification avoids significant amount of duplication across many formatting functions, it also adds overhead.
+- `sprintf` has a lot of complexity and shares its implementation with a large number of functions, including `fprintf`, which works with file descriptors instead of string buffers directly. While such unification avoids a significant amount of duplication across many formatting functions, it also adds overhead.
 
-### Conclusion?
-There is really no reason to use `sprintf` to format numeric values - `std::to_chars` is simple to use, safe and fast.
+### Conclusion
+There is really no reason to use `sprintf` to format numeric values - `std::to_chars` is simple to use, safe, and fast.
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
