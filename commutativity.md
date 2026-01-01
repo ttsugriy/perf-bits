@@ -7,7 +7,7 @@ toc_sticky: true
 math: true
 ---
 
-*Also published on [Software Bits](https://softwarebits.substack.com/) — subscribe for updates.*
+*Also published on [Software Bits](https://open.substack.com/pub/softwarebits/p/commutativity-why-transformers-need?r=5hjce&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true) — subscribe for updates.*
 
 ---
 
