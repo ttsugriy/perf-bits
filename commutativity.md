@@ -4,6 +4,11 @@ title: "Commutativity: Why Transformers Need Positional Encodings"
 excerpt: "And other consequences of order not mattering"
 toc: true
 toc_sticky: true
+math: true
+---
+
+*Also published on [Software Bits](https://softwarebits.substack.com/) — subscribe for updates.*
+
 ---
 
 Here's a question that seems too simple to be interesting:

@@ -7,6 +7,10 @@ toc_sticky: true
 math: true
 ---
 
+*Originally published on [Software Bits](https://softwarebits.substack.com/p/the-one-property-that-makes-flashattention) — subscribe for updates.*
+
+---
+
 **FlashAttention is everywhere.**
 
 It's in PyTorch, JAX, and every LLM serving stack. It delivers 2-4x speedups and cuts memory from O(n²) to O(n).
