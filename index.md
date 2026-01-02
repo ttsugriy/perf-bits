@@ -12,6 +12,20 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="domain-transformations.html">Domain Transformations: The Art of Finding Easier Spaces</a></h3>
+    <p class="archive__item-excerpt">Why logarithms prevent underflow, why Fourier speeds up convolutions, and how choosing the right space makes hard problems tractable.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
+    <h3 class="archive__item-title"><a href="linearity.html">Linearity: Why Batching Works</a></h3>
+    <p class="archive__item-excerpt">And the property that makes neural network training computationally tractable.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="commutativity.html">Commutativity: Why Transformers Need Positional Encodings</a></h3>
     <p class="archive__item-excerpt">And other consequences of order not mattering in ML architectures.</p>
   </div>
