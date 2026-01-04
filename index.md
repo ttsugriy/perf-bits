@@ -12,6 +12,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="distributed-id-generation.html">Beyond Snowflake: A Problem-Solver's Guide to Distributed ID Generation</a></h3>
+    <p class="archive__item-excerpt">How memory allocators teach us to generate unique IDs at scale—and how to discover solutions, not just memorize them.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="sparsity.html">Sparsity: The License to Skip</a></h3>
     <p class="archive__item-excerpt">Why ignoring most of your neural network is the key to efficiency.</p>
   </div>
