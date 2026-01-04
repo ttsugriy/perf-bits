@@ -380,7 +380,7 @@ This is computational judo: using structure to redirect effort. The best algorit
 
 ---
 
-*This completes the algebraic properties series. The properties covered—associativity, commutativity, linearity, and domain transformations—are the mathematical foundations that make modern ML systems computationally tractable.*
+*Next in this series: [Sparsity: The License to Skip](sparsity.html)—why ignoring most of your neural network is the key to efficiency.*
 
 ---
 
