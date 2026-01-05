@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="smoothness.html">Smoothness: The License to Go Deep</a></h3>
+    <p class="archive__item-excerpt">Why ResNets train but plain networks don't, and the property that unlocked modern deep learning.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="symmetry.html">Symmetry: The Property That Designs Architectures</a></h3>
     <p class="archive__item-excerpt">Why CNNs share weights, why GNNs aggregate neighbors, and why AlphaFold predicts proteins.</p>
   </div>

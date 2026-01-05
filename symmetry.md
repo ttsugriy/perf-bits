@@ -371,6 +371,8 @@ The algebra isn't abstract. It's why neural networks are tractable at all.
 
 ---
 
+*Next: [Smoothness: The License to Go Deep](smoothness.html)*
+
 *Previous: [Separability: The Art of Factorization](separability.html)*
 
 ---
