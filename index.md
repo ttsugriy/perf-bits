@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="stochasticity.html">Stochasticity: The Regularizer in Disguise</a></h3>
+    <p class="archive__item-excerpt">Why noise is not the enemy of learning—it's the secret ingredient.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="locality.html">Locality: The License to Focus</a></h3>
     <p class="archive__item-excerpt">Why 3×3 kernels beat global attention, and the assumption that makes efficient ML possible.</p>
   </div>

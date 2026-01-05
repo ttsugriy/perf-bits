@@ -335,6 +335,8 @@ The algebra isn't abstract. It's why your phone processes images in real-time wh
 
 ---
 
+*Next: [Stochasticity: The Regularizer in Disguise](stochasticity.html)*
+
 *Previous: [Smoothness: The License to Go Deep](smoothness.html)*
 
 ---
