@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="separability.html">Separability: The Art of Factorization</a></h3>
+    <p class="archive__item-excerpt">Why MobileNet is 12x faster than ResNet, and how LoRA fine-tunes GPT-3 with 10,000x fewer parameters.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="sparsity.html">Sparsity: The License to Skip</a></h3>
     <p class="archive__item-excerpt">Why ignoring most of your neural network is the key to efficiency.</p>
   </div>

@@ -298,6 +298,8 @@ MoE says: let the input decide what matters.
 
 ---
 
+*Next in this series: [Separability: The Art of Factorization](separability.html)—why MobileNet is 12x faster than ResNet, and how LoRA fine-tunes GPT-3 with 10,000x fewer parameters.*
+
 *Previous article: [Domain Transformations: The Art of Finding Easier Spaces](domain-transformations.html)*
 
 ---
