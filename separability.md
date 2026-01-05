@@ -357,7 +357,9 @@ The algebra isn't abstract. It's why your phone can run neural networks.
 
 ---
 
-*Previous article: [Sparsity: The License to Skip](sparsity.html)*
+*Next: [Symmetry: The Property That Designs Architectures](symmetry.html)*
+
+*Previous: [Sparsity: The License to Skip](sparsity.html)*
 
 ---
 

@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="symmetry.html">Symmetry: The Property That Designs Architectures</a></h3>
+    <p class="archive__item-excerpt">Why CNNs share weights, why GNNs aggregate neighbors, and why AlphaFold predicts proteins.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="separability.html">Separability: The Art of Factorization</a></h3>
     <p class="archive__item-excerpt">Why MobileNet is 12x faster than ResNet, and how LoRA fine-tunes GPT-3 with 10,000x fewer parameters.</p>
   </div>
