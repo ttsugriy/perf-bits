@@ -361,6 +361,8 @@ The algebra isn't abstract. It's why deep learning works at all.
 
 ---
 
+*Next: [Locality: The License to Focus](locality.html)*
+
 *Previous: [Symmetry: The Property That Designs Architectures](symmetry.html)*
 
 ---
