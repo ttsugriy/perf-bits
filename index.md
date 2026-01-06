@@ -19,6 +19,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="quantization.html">Quantization: The License to Approximate</a></h3>
+    <p class="archive__item-excerpt">Why 4 bits can do the work of 32, and the mathematical reason neural networks tolerate imprecision.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="compositionality.html">Compositionality: The Power of Depth</a></h3>
     <p class="archive__item-excerpt">Why stacking layers creates exponential expressiveness.</p>
   </div>

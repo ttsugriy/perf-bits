@@ -334,6 +334,8 @@ When you need to represent complex functions, don't make the network wider. Make
 
 ---
 
+*Next: [Quantization: The License to Approximate](quantization.html)*
+
 *Previous: [Stochasticity: The Regularizer in Disguise](stochasticity.html)*
 
 ---
