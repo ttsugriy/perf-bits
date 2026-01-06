@@ -366,6 +366,8 @@ The randomness isn't a bug. It's why deep learning generalizes at all.
 
 ---
 
+*Next: [Compositionality: The Power of Depth](compositionality.html)*
+
 *Previous: [Locality: The License to Focus](locality.html)*
 
 ---

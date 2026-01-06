@@ -1,0 +1,275 @@
+# Compositionality: The Power of Depth
+
+*Why stacking layers creates exponential expressiveness*
+
+> **For the best reading experience with properly rendered equations, [view this article on GitHub Pages](https://ttsugriy.github.io/perf-bits/compositionality.html).**
+
+---
+
+Here's a result that explains why deep learning works.
+
+A function representable by a ReLU network with k² layers and k³ neurons would require at least ½k^(k+1) neurons in a network with only k layers.
+
+For k = 10: the deep network needs ~1,000 neurons. The shallow network needs ~50 billion.
+
+That's not a percentage improvement. It's an *exponential* gap.
+
+The difference? **Compositionality**—the principle that complex functions are built by composing simpler ones.
+
+---
+
+## The Property
+
+Compositionality means building complex things from simple pieces:
+
+**f = fₙ ∘ fₙ₋₁ ∘ ... ∘ f₂ ∘ f₁**
+
+A deep network is a composition of layers. Each layer transforms its input; the output becomes the next layer's input.
+
+This seems like an implementation detail. It's not. It's the source of deep learning's power.
+
+**Shallow networks** (one hidden layer) are universal approximators—they can represent any continuous function given enough neurons. But "enough" can mean *exponentially many*.
+
+**Deep networks** represent the same functions with polynomially many neurons. The depth creates leverage.
+
+---
+
+## The Exponential Gap
+
+Why does depth help so dramatically?
+
+### Linear Regions
+
+A ReLU network divides input space into **linear regions**—pieces where the function is linear. More regions = more expressive.
+
+**Shallow network** (width w, depth 1):
+- Maximum O(w^d) regions, where d is input dimension
+
+**Deep network** (width w, depth L):
+- Maximum O(w^(Ld)) regions
+
+The number of regions grows **exponentially with depth**. A 10-layer network can have w^10 more regions than a 1-layer network with the same width.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   SHALLOW (1 hidden layer)         DEEP (4 hidden layers)      │
+│                                                                 │
+│   ┌─────────────────┐              ┌─────────────────┐         │
+│   │    ╱│╲          │              │ ╱╲╱╲╱╲╱╲╱╲╱╲   │         │
+│   │   ╱ │ ╲         │              │╱╲╱╲╱╲╱╲╱╲╱╲╱╲  │         │
+│   │  ╱  │  ╲        │              │╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲ │         │
+│   │ ╱   │   ╲       │              │╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱ │         │
+│   └─────────────────┘              └─────────────────┘         │
+│                                                                 │
+│   ~4 linear regions                ~64 linear regions          │
+│   Same total neurons!                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+Each layer multiplies expressiveness. Shallow networks add; deep networks multiply.
+
+---
+
+## Hierarchical Features
+
+Compositionality explains why CNNs learn what they learn.
+
+### The Feature Hierarchy
+
+Visualizing CNN activations reveals a striking pattern:
+
+| Layer | What It Detects | Receptive Field |
+|-------|-----------------|-----------------|
+| Layer 1 | Edges, colors | 3×3 pixels |
+| Layer 2 | Textures, corners | ~10×10 pixels |
+| Layer 3 | Parts (eyes, wheels) | ~50×50 pixels |
+| Layer 4 | Objects (faces, cars) | ~100×100 pixels |
+| Layer 5 | Scenes, contexts | Whole image |
+
+Each layer builds on the previous. Edges compose into textures. Textures compose into parts. Parts compose into objects.
+
+This isn't designed—it *emerges* from composition. The network discovers that hierarchical features are efficient for the task.
+
+### Why Hierarchy is Efficient
+
+Consider detecting a face:
+
+**Without composition**: Learn all possible face pixel patterns directly. Exponentially many patterns (lighting, pose, identity, expression...).
+
+**With composition**:
+1. Learn edge detectors (few patterns)
+2. Compose edges into texture detectors (reuse edges)
+3. Compose textures into part detectors (reuse textures)
+4. Compose parts into face detectors (reuse parts)
+
+Each level reuses the previous level. A nose detector doesn't need to re-learn edges—it builds on existing edge detectors.
+
+This is why deep networks need fewer parameters than shallow ones: **feature reuse through composition**.
+
+---
+
+## Mathematical Intuition
+
+### Polynomial Analogy
+
+Consider computing (a + b)^10.
+
+**Direct approach**: Expand to all 1,024 terms, compute each. O(2^10) operations.
+
+**Compositional approach**:
+- (a+b)² = a² + 2ab + b²
+- Square the result repeatedly: ((a+b)²)² = (a+b)⁴, etc.
+- O(log 10) = O(1) operations.
+
+The compositional approach exploits structure. The direct approach treats the problem as a flat lookup.
+
+Deep networks do the same thing: they exploit compositional structure in the function being learned.
+
+---
+
+## Composition in Modern Architectures
+
+Every successful deep learning architecture is built on composition.
+
+### Transformers
+
+A transformer is a composition of identical blocks:
+
+```python
+def transformer(x, num_layers):
+    for _ in range(num_layers):
+        x = x + attention(layer_norm(x))
+        x = x + ffn(layer_norm(x))
+    return x
+```
+
+Each block composes attention (global mixing) with FFN (local processing). Stacking blocks compounds their effects.
+
+GPT-3 uses 96 layers. Each layer builds on previous representations. The first layers might capture syntax; later layers capture semantics, then reasoning patterns.
+
+### ResNets
+
+ResNets explicitly frame composition as residual learning:
+
+**h_{l+1} = h_l + f_l(h_l)**
+
+Each layer adds a residual. The final output is the sum of all residuals—a composition of refinements.
+
+### U-Nets
+
+U-Nets compose encoder and decoder:
+
+```
+Input → Encode → Encode → Encode → Bottleneck
+                                      ↓
+Output ← Decode ← Decode ← Decode ←───┘
+         (+skip)  (+skip)  (+skip)
+```
+
+The encoder composes down to abstract representations. The decoder composes back up to detailed outputs.
+
+---
+
+## The Efficiency of Modularity
+
+Composition enables **modularity**—reusable components.
+
+### Transfer Learning
+
+A pretrained CNN has learned hierarchical features. The early layers (edges, textures) transfer to almost any vision task. Only the later layers need task-specific training.
+
+This works because of composition: early layers are *general* (useful across tasks), late layers are *specific* (task-dependent). You can compose new heads onto pretrained bodies.
+
+Without compositional structure, every task would require learning from scratch.
+
+---
+
+## Why Shallow Networks Fail
+
+If shallow networks are universal approximators, why not just use them?
+
+### The Memorization Problem
+
+A shallow network with enough neurons can memorize any training set. But memorization requires one feature per training example—no generalization.
+
+Deep networks can't memorize as easily. Their compositional structure forces them to find patterns that apply across examples.
+
+### The Feature Reuse Problem
+
+Shallow networks can't reuse features. Every output unit connects directly to inputs—there's no intermediate representation to share.
+
+Consider detecting 1000 object classes:
+- **Shallow**: 1000 independent classifiers, each learning edges from scratch
+- **Deep**: One shared edge detector, reused by all classifiers
+
+The deep network amortizes feature learning across classes.
+
+---
+
+## Depth-Width Tradeoffs
+
+Depth and width aren't interchangeable.
+
+### What Width Provides
+
+- **Parallelism**: More neurons per layer = more parallel computation
+- **Feature diversity**: More features detected simultaneously
+- **Optimization ease**: Wider networks have smoother loss landscapes
+
+### What Depth Provides
+
+- **Abstraction**: More layers = more levels of abstraction
+- **Efficiency**: Exponentially more expressiveness per parameter
+- **Composition**: Complex functions from simple pieces
+
+### The Modern Consensus
+
+State-of-the-art architectures balance both:
+
+| Model | Depth | Width | Key Insight |
+|-------|-------|-------|-------------|
+| ResNet-152 | 152 layers | 64-2048 | Deep with residuals |
+| GPT-3 | 96 layers | 12288 | Very wide + very deep |
+| ViT-Large | 24 layers | 1024 | Moderate both |
+
+The trend: both depth and width matter, but depth provides unique efficiency gains.
+
+---
+
+## The Takeaway
+
+Compositionality is the power of depth.
+
+**f = fₙ ∘ fₙ₋₁ ∘ ... ∘ f₁**
+
+This simple principle explains:
+- Why deep networks need exponentially fewer parameters than shallow ones
+- Why CNNs learn edges → textures → parts → objects
+- Why Transformers stack identical blocks
+- Why transfer learning works
+- Why modularity is efficient
+
+The key insight: each layer multiplies expressiveness. Depth doesn't add power—it *compounds* it.
+
+A 100-layer network isn't 100× more powerful than a 1-layer network. It's 2^100 more powerful (in terms of representable linear regions).
+
+This is why deep learning is "deep." Not because deep sounds impressive, but because composition is exponentially more efficient than enumeration.
+
+When you need to represent complex functions, don't make the network wider. Make it deeper. Let composition do the heavy lifting.
+
+---
+
+*Previous article: [Stochasticity: The Regularizer in Disguise](https://ttsugriy.github.io/perf-bits/stochasticity.html)*
+
+---
+
+## Further Reading
+
+- [Montúfar et al., "On the Number of Linear Regions of Deep Neural Networks" (2014)](https://arxiv.org/abs/1402.1869) — Why depth creates exponentially more linear regions
+- [Telgarsky, "Benefits of Depth in Neural Networks" (2016)](https://arxiv.org/abs/1602.04485) — Formal separation between deep and shallow
+- [Mhaskar & Poggio, "Deep vs. Shallow Networks" (2016)](https://arxiv.org/abs/1608.03287) — Approximation theory perspective
+- [Zeiler & Fergus, "Visualizing and Understanding CNNs" (2014)](https://arxiv.org/abs/1311.2901) — Hierarchical feature visualization
+- [Arora et al., "Understanding Deep Neural Networks with Rectified Linear Units" (2018)](https://arxiv.org/abs/1611.01491) — Zonotope theory and linear regions
+- [He et al., "Deep Residual Learning" (2015)](https://arxiv.org/abs/1512.03385) — Residual composition for very deep networks
