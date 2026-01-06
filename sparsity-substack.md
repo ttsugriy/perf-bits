@@ -1,13 +1,8 @@
----
-layout: single
-title: "Sparsity: The License to Skip"
-excerpt: "Why ignoring most of your neural network is the key to efficiency"
-toc: true
-toc_sticky: true
-math: true
----
+# Sparsity: The License to Skip
 
-*Subscribe to [Software Bits](https://softwarebits.substack.com/) to get new articles in your inbox.*
+*Why ignoring most of your neural network is the key to efficiency*
+
+> 📖 **For the best reading experience with properly rendered equations, [view this article on GitHub Pages](https://ttsugriy.github.io/perf-bits/sparsity.html).**
 
 ---
 
@@ -23,15 +18,15 @@ The trick is a property called **sparsity**.
 
 A matrix is sparse if most of its elements are zero:
 
-$$\text{sparsity} = \frac{\text{number of zeros}}{\text{total elements}}$$
+**sparsity = number of zeros / total elements**
 
 A 90% sparse matrix has 9 zeros for every nonzero value.
 
 Why should this help? Consider matrix-vector multiplication:
 
-$$y_i = \sum_j W_{ij} x_j$$
+**yᵢ = Σⱼ Wᵢⱼ xⱼ**
 
-If $W_{ij} = 0$, that term contributes nothing. Skip it.
+If Wᵢⱼ = 0, that term contributes nothing. Skip it.
 
 With 90% sparsity, you skip 90% of the multiplications. 10x speedup, right?
 
@@ -101,7 +96,11 @@ The constraint is the feature: fixed positions mean predictable memory access, p
 
 Instead of individual zeros, zero out entire blocks:
 
-$$W = \begin{bmatrix} \mathbf{A} & \mathbf{0} & \mathbf{B} \\ \mathbf{0} & \mathbf{C} & \mathbf{0} \\ \mathbf{D} & \mathbf{0} & \mathbf{E} \end{bmatrix}$$
+```
+W = | A   0   B |
+    | 0   C   0 |
+    | D   0   E |
+```
 
 Each block is either:
 - **Dense**: Use optimized GEMM
@@ -150,7 +149,7 @@ Unstructured pruning creates random zeros—exactly what GPUs can't exploit. Opt
 
 ReLU creates sparsity for free:
 
-$$\text{ReLU}(x) = \max(0, x)$$
+**ReLU(x) = max(0, x)**
 
 Roughly half of activations become zero in typical networks. That's 50% sparsity in every hidden layer.
 
@@ -171,12 +170,12 @@ Here's the most elegant form of sparsity: **don't decide which weights are zero�
 
 A Mixture of Experts layer:
 
-$$y = \sum_{i=1}^{N} G(x)_i \cdot E_i(x)$$
+**y = Σᵢ G(x)ᵢ · Eᵢ(x)**
 
 where:
-- $E_1, E_2, \ldots, E_N$ are N "expert" networks (typically MLPs)
-- $G(x)$ is a gating/routing function
-- $G(x)$ is sparse: only top-k experts get nonzero weights
+- E₁, E₂, …, Eₙ are N "expert" networks (typically MLPs)
+- G(x) is a gating/routing function
+- G(x) is sparse: only top-k experts get nonzero weights
 
 With 8 experts and top-2 routing:
 - Each token activates only 2 experts
@@ -245,7 +244,7 @@ The pattern is clear: frontier models use conditional computation.
 
 ## Sparse Attention
 
-Full attention is $O(n^2)$ for sequence length $n$. At 100K tokens, that's 10 billion attention computations per layer.
+Full attention is O(n²) for sequence length n. At 100K tokens, that's 10 billion attention computations per layer.
 
 Sparse attention reduces this by only attending to a subset of positions.
 
@@ -257,7 +256,7 @@ Each position attends only to nearby positions:
 Position i attends to: [i-w, ..., i-1, i, i+1, ..., i+w]
 ```
 
-Complexity: $O(n \cdot w)$ where $w$ is window size.
+Complexity: O(n · w) where w is window size.
 
 This works because most relevant context is local. Long-range dependencies exist but are rarer.
 
@@ -327,7 +326,7 @@ Once trained, much of this capacity is redundant.
 
 Sparsity is the mathematical license to skip computation.
 
-$$\text{If } W_{ij} = 0 \text{ or unused, then skip } W_{ij} \cdot x_j$$
+**If Wᵢⱼ = 0 or unused, then skip Wᵢⱼ · xⱼ**
 
 But hardware doesn't exploit random zeros. Unstructured sparsity gives unstructured memory access, which GPUs hate.
 
@@ -346,9 +345,7 @@ MoE says: let the input decide what matters.
 
 ---
 
-*Next in this series: [Separability: The Art of Factorization](separability.html)—why MobileNet is 12x faster than ResNet, and how LoRA fine-tunes GPT-3 with 10,000x fewer parameters.*
-
-*Previous article: [Domain Transformations: The Art of Finding Easier Spaces](domain-transformations.html)*
+*Previous article: [Domain Transformations: The Art of Finding Easier Spaces](https://ttsugriy.github.io/perf-bits/domain-transformations.html)*
 
 ---
 

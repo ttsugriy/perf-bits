@@ -129,6 +129,40 @@ At test time, using all neurons approximates the **ensemble average** of all the
 
 Ensembles generalize better than individual models—they average out individual errors. Dropout gets you an exponential ensemble at the cost of one network.
 
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│              DROPOUT: IMPLICIT ENSEMBLE OF 2ⁿ NETWORKS          │
+│                                                                 │
+│   TRAINING (different random masks each step):                  │
+│                                                                 │
+│   Step 1          Step 2          Step 3          Step 4        │
+│   ○───○           ●───○           ○───●           ●───●         │
+│    ╲╱ ╲╱           ╲╱ ╲╱           ╲╱ ╲╱           ╲╱ ╲╱         │
+│   ●───●           ○───●           ●───○           ○───●         │
+│    ╲╱ ╲╱           ╲╱ ╲╱           ╲╱ ╲╱           ╲╱ ╲╱         │
+│   ○───●           ●───●           ○───○           ●───○         │
+│                                                                 │
+│   ● = active neuron    ○ = dropped neuron                       │
+│                                                                 │
+│   Each pattern is a different subnetwork!                       │
+│   With n neurons: 2ⁿ possible subnetworks                       │
+│                                                                 │
+│   ─────────────────────────────────────────────────────────     │
+│                                                                 │
+│   INFERENCE (all neurons, scaled):                              │
+│                                                                 │
+│          ●───●                                                  │
+│           ╲╱ ╲╱                                                  │
+│          ●───●     ≈    Average of all 2ⁿ subnetworks           │
+│           ╲╱ ╲╱                                                  │
+│          ●───●                                                  │
+│                                                                 │
+│   Full network approximates ensemble prediction!                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### Why Random Removal Helps
 
 **Forces redundancy**: No single neuron can become a "hero" that the network relies on entirely. Features must be distributed across multiple neurons.

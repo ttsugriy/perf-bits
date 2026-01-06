@@ -70,6 +70,41 @@ Each output pixel requires a $D_K \times D_K \times M$ dot product. There are $N
 
 Factor the convolution into two steps:
 
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   STANDARD CONVOLUTION           DEPTHWISE SEPARABLE            │
+│                                                                 │
+│   Input (3 channels)             Input (3 channels)             │
+│   ┌───┬───┬───┐                  ┌───┬───┬───┐                  │
+│   │ R │ G │ B │                  │ R │ G │ B │                  │
+│   └─┬─┴─┬─┴─┬─┘                  └─┬─┴─┬─┴─┬─┘                  │
+│     │   │   │                      │   │   │                    │
+│     └───┼───┘                      ▼   ▼   ▼                    │
+│         │                       ┌──────────────┐                │
+│         ▼                       │   3×3 conv   │  ← Depthwise   │
+│   ┌───────────┐                 │  (per channel)│                │
+│   │  3×3×3    │ ← Full 3D      └──────────────┘                │
+│   │  kernel   │   convolution        │   │   │                  │
+│   │  ×N times │                      └───┼───┘                  │
+│   └───────────┘                          │                      │
+│         │                                ▼                      │
+│         ▼                          ┌──────────┐                 │
+│   N output channels                │   1×1    │  ← Pointwise    │
+│                                    │  conv ×N │    (mixes       │
+│                                    └──────────┘     channels)   │
+│                                          │                      │
+│                                          ▼                      │
+│                                    N output channels            │
+│                                                                 │
+│   Cost: D²K × M × N × D²F        Cost: D²K × M × D²F           │
+│                                       + M × N × D²F             │
+│                                                                 │
+│   For 3×3, 256 outputs: 100%     For 3×3, 256 outputs: ~11%    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 **Step 1: Depthwise convolution**
 Apply a separate $D_K \times D_K$ filter to each input channel.
 
@@ -142,6 +177,42 @@ where:
 - $r \ll \min(d, k)$ is the rank (typically 4, 8, 16, or 32)
 
 During training, only $B$ and $A$ are updated. $W$ stays fixed.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    LoRA: LOW-RANK ADAPTATION                    │
+│                                                                 │
+│   FULL FINE-TUNING                  LoRA                        │
+│                                                                 │
+│   ┌─────────────────┐               ┌─────────────────┐         │
+│   │                 │               │                 │         │
+│   │   W (d × k)     │               │   W (d × k)     │ frozen  │
+│   │                 │               │                 │         │
+│   │  ALL trainable  │               └────────┬────────┘         │
+│   │                 │                        │                  │
+│   └─────────────────┘                        │                  │
+│                                              │                  │
+│   Parameters: d × k                          ▼                  │
+│   (e.g., 16.7M)                        ┌─────────┐              │
+│                                   x ──►│    +    │──► output    │
+│                                        └────┬────┘              │
+│                                             │                   │
+│                                     ┌───────┴───────┐           │
+│                                     │               │           │
+│                                  ┌──┴──┐         ┌──┴──┐        │
+│                                  │  B  │         │  A  │        │
+│                                  │d × r│         │r × k│        │
+│                                  └─────┘         └─────┘        │
+│                                   trainable      trainable      │
+│                                                                 │
+│                                  Parameters: r × (d + k)        │
+│                                  (e.g., 65K for r=8)            │
+│                                                                 │
+│                                  256× fewer parameters!         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### The Numbers
 
