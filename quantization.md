@@ -33,7 +33,7 @@ $$Q(x) = \Delta \cdot \text{round}\left(\frac{x}{\Delta}\right)$$
 
 where $\Delta$ is the step size (quantization interval).
 
-A 32-bit float can represent ~$10^9$ distinct values. An 8-bit integer: 256. A 4-bit integer: 16.
+A 32-bit float can represent ~4 billion distinct values. An 8-bit integer: 256. A 4-bit integer: 16.
 
 The naive view: fewer values = less precision = worse accuracy.
 

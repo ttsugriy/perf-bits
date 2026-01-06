@@ -28,7 +28,7 @@ Quantization is the license to approximate. And it's why you can run GPT-class m
 
 where Δ is the step size (quantization interval).
 
-A 32-bit float can represent ~10⁹ distinct values. An 8-bit integer: 256. A 4-bit integer: 16.
+A 32-bit float can represent ~4 billion distinct values. An 8-bit integer: 256. A 4-bit integer: 16.
 
 The naive view: fewer values = less precision = worse accuracy.
 

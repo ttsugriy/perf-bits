@@ -13,9 +13,9 @@ math: true
 
 Here's a result that explains why deep learning works.
 
-A function representable by a ReLU network with $k^2$ layers and $k^3$ neurons would require at least $\frac{1}{2}k^{k+1}$ neurons in a network with only $k$ layers.
+There exist functions that a deep ReLU network with $k^3$ layers and only $O(1)$ neurons per layer can compute, but which require a shallow network with $O(k)$ layers to have at least $\Omega(2^k)$ neurons.
 
-For $k = 10$: the deep network needs ~1,000 neurons. The shallow network needs ~50 billion.
+For $k = 30$: the deep network needs ~90 neurons. A shallow network with 30 layers needs over **one billion**.
 
 That's not a percentage improvement. It's an *exponential* gap.
 
@@ -79,9 +79,9 @@ Each layer multiplies expressiveness. Shallow networks add; deep networks multip
 
 Research has proven strict separation theorems:
 
-> Functions representable by a network with $k^2$ layers and $k^3$ total neurons require at least $\frac{1}{2}k^{k+1}$ neurons in a network with $k$ layers.
+> There exist functions computable by networks with $\Theta(k^3)$ layers and $O(1)$ nodes per layer that cannot be approximated by networks with $O(k)$ layers unless they have $\Omega(2^k)$ nodes. — Telgarsky (2016)
 
-This is **super-exponential** separation. Depth isn't just convenient—it's fundamentally more efficient for certain functions.
+This is **exponential** separation. Depth isn't just convenient—it's fundamentally more efficient for certain functions. Every additional layer of depth can halve the width required, or equivalently, double the expressiveness.
 
 ---
 
@@ -125,20 +125,21 @@ This is why deep networks need fewer parameters than shallow ones: **feature reu
 
 ## Mathematical Intuition
 
-### Polynomial Analogy
+### Exponentiation Analogy
 
-Consider computing $(a + b)^{10}$.
+Consider computing $x^{1024}$.
 
-**Direct approach**: Expand to all 1,024 terms, compute each. $O(2^{10})$ operations.
+**Direct approach**: Multiply $x \times x \times \cdots \times x$ (1,023 multiplications).
 
-**Compositional approach**:
-- $(a+b)^2 = a^2 + 2ab + b^2$
-- Square the result repeatedly: $((a+b)^2)^2 = (a+b)^4$, etc.
-- $O(\log 10) = O(1)$ operations.
+**Compositional approach** (repeated squaring):
+- $x^2$, then $(x^2)^2 = x^4$, then $(x^4)^2 = x^8$, ...
+- 10 squarings to reach $x^{1024}$
 
-The compositional approach exploits structure. The direct approach treats the problem as a flat lookup.
+The compositional approach is $O(\log n)$; the direct approach is $O(n)$. For $n = 1024$, that's 10 operations versus 1,023.
 
-Deep networks do the same thing: they exploit compositional structure in the function being learned.
+This is exactly what depth provides: **reusing intermediate computations**. The direct approach treats each multiplication independently. The compositional approach builds each result from the previous.
+
+Deep networks do the same thing: early layers compute features that later layers reuse, rather than recomputing everything from scratch.
 
 ### Circuit Complexity
 
