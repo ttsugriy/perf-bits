@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zobrist Hashing Interactive Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .board-container {
+            flex-shrink: 0;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            border: 3px solid #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .square {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            user-select: none;
+        }
+
+        .square.light {
+            background: #f0d9b5;
+        }
+
+        .square.dark {
+            background: #b58863;
+        }
+
+        .square.selected {
+            background: #7fc97f !important;
+        }
+
+        .square.valid-move {
+            background: #aaffaa !important;
+        }
+
+        .square:hover {
+            filter: brightness(1.1);
+        }
+
+        .info-panel {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+        }
+
+        .hash-display {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hash-label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .hash-value {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #4ade80;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .operations {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+
+        .operations h3 {
+            margin: 0 0 15px 0;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: normal;
+        }
+
+        .op-list {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .op-item {
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .op-item.xor-out {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .op-item.xor-in {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+
+        .op-item.result {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border-top: 1px solid #333;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .instructions {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .instructions strong {
+            color: #fff;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #2563eb;
+        }
+
+        .move-count {
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .piece-white {
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+        }
+
+        .piece-black {
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Zobrist Hashing: Interactive Demo</h1>
+        <p class="subtitle">Click a piece, then click a destination to see O(1) hash updates in action</p>
+
+        <div class="main-layout">
+            <div class="board-container">
+                <div class="board" id="board"></div>
+                <p class="move-count">Moves: <span id="moveCount">0</span></p>
+            </div>
+
+            <div class="info-panel">
+                <div class="hash-display">
+                    <div class="hash-label">Current Zobrist Hash</div>
+                    <div class="hash-value" id="hashValue">0x0000000000000000</div>
+                </div>
+
+                <div class="operations">
+                    <h3>XOR Operations (last move)</h3>
+                    <div class="op-list" id="opList">
+                        <div style="color: #666; font-style: italic;">Make a move to see operations...</div>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <strong>How it works:</strong><br>
+                    Each (piece, square) has a random 64-bit number.
+                    Moving a piece XORs out the old position and XORs in the new one.
+                    <strong>Only 2 operations</strong> — not 64.
+                </div>
+
+                <button class="reset-btn" onclick="resetBoard()">Reset Board</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Piece symbols
+        const PIECES = {
+            'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+            'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+        };
+
+        const PIECE_NAMES = {
+            'K': 'King', 'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight', 'P': 'Pawn',
+            'k': 'King', 'q': 'Queen', 'r': 'Rook', 'b': 'Bishop', 'n': 'Knight', 'p': 'Pawn'
+        };
+
+        // Square names
+        const FILES = 'abcdefgh';
+        const RANKS = '87654321';
+
+        function squareName(idx) {
+            return FILES[idx % 8] + RANKS[Math.floor(idx / 8)];
+        }
+
+        // Seeded random number generator for reproducible Zobrist keys
+        class SeededRNG {
+            constructor(seed) {
+                this.seed = seed;
+            }
+
+            next() {
+                // Simple LCG
+                this.seed = (this.seed * 1103515245 + 12345) & 0x7fffffff;
+                return this.seed;
+            }
+
+            nextBigInt() {
+                // Generate a 64-bit number as BigInt
+                const high = BigInt(this.next()) << 32n;
+                const low = BigInt(this.next());
+                return high | low;
+            }
+        }
+
+        // Generate Zobrist table
+        const rng = new SeededRNG(42);
+        const zobristTable = {};
+        const allPieces = 'KQRBNPkqrbnp';
+
+        for (const piece of allPieces) {
+            zobristTable[piece] = [];
+            for (let sq = 0; sq < 64; sq++) {
+                zobristTable[piece].push(rng.nextBigInt());
+            }
+        }
+
+        // Board state
+        let board = [];
+        let selectedSquare = null;
+        let currentHash = 0n;
+        let moveCount = 0;
+
+        // Initial position
+        const INITIAL_POSITION = [
+            'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+            'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
+            null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, null, null,
+            'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+            'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
+        ];
+
+        function initBoard() {
+            board = [...INITIAL_POSITION];
+            currentHash = computeFullHash();
+            selectedSquare = null;
+            moveCount = 0;
+            renderBoard();
+            updateHashDisplay();
+            document.getElementById('moveCount').textContent = '0';
+            document.getElementById('opList').innerHTML =
+                '<div style="color: #666; font-style: italic;">Make a move to see operations...</div>';
+        }
+
+        function computeFullHash() {
+            let h = 0n;
+            for (let sq = 0; sq < 64; sq++) {
+                const piece = board[sq];
+                if (piece) {
+                    h ^= zobristTable[piece][sq];
+                }
+            }
+            return h;
+        }
+
+        function formatHash(h) {
+            return '0x' + h.toString(16).padStart(16, '0').toUpperCase();
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+
+            for (let sq = 0; sq < 64; sq++) {
+                const row = Math.floor(sq / 8);
+                const col = sq % 8;
+                const isLight = (row + col) % 2 === 0;
+
+                const squareEl = document.createElement('div');
+                squareEl.className = `square ${isLight ? 'light' : 'dark'}`;
+                squareEl.dataset.square = sq;
+
+                if (sq === selectedSquare) {
+                    squareEl.classList.add('selected');
+                }
+
+                const piece = board[sq];
+                if (piece) {
+                    squareEl.textContent = PIECES[piece];
+                    squareEl.classList.add(piece === piece.toUpperCase() ? 'piece-white' : 'piece-black');
+                }
+
+                squareEl.addEventListener('click', () => handleSquareClick(sq));
+                boardEl.appendChild(squareEl);
+            }
+        }
+
+        function handleSquareClick(sq) {
+            const piece = board[sq];
+
+            if (selectedSquare === null) {
+                // No piece selected yet
+                if (piece) {
+                    selectedSquare = sq;
+                    renderBoard();
+                }
+            } else if (selectedSquare === sq) {
+                // Clicked same square - deselect
+                selectedSquare = null;
+                renderBoard();
+            } else {
+                // Move piece
+                const movingPiece = board[selectedSquare];
+                const capturedPiece = board[sq];
+
+                // Perform the move
+                makeMove(selectedSquare, sq, movingPiece, capturedPiece);
+
+                selectedSquare = null;
+                renderBoard();
+            }
+        }
+
+        function makeMove(fromSq, toSq, piece, captured) {
+            const operations = [];
+            const oldHash = currentHash;
+
+            // XOR out piece from old square
+            const xorOut = zobristTable[piece][fromSq];
+            currentHash ^= xorOut;
+            operations.push({
+                type: 'xor-out',
+                text: `XOR out ${PIECE_NAMES[piece]} @ ${squareName(fromSq)}`,
+                value: xorOut
+            });
+
+            // If capturing, XOR out captured piece
+            if (captured) {
+                const xorCapture = zobristTable[captured][toSq];
+                currentHash ^= xorCapture;
+                operations.push({
+                    type: 'xor-out',
+                    text: `XOR out ${PIECE_NAMES[captured]} @ ${squareName(toSq)} (captured)`,
+                    value: xorCapture
+                });
+            }
+
+            // XOR in piece at new square
+            const xorIn = zobristTable[piece][toSq];
+            currentHash ^= xorIn;
+            operations.push({
+                type: 'xor-in',
+                text: `XOR in ${PIECE_NAMES[piece]} @ ${squareName(toSq)}`,
+                value: xorIn
+            });
+
+            // Update board
+            board[fromSq] = null;
+            board[toSq] = piece;
+
+            // Verify hash matches full recomputation
+            const verifyHash = computeFullHash();
+            const hashesMatch = currentHash === verifyHash;
+
+            operations.push({
+                type: 'result',
+                text: `New hash: ${formatHash(currentHash)}`,
+                value: currentHash,
+                verified: hashesMatch
+            });
+
+            moveCount++;
+            document.getElementById('moveCount').textContent = moveCount;
+
+            // Animate operations
+            displayOperations(operations, oldHash);
+            updateHashDisplay();
+        }
+
+        function displayOperations(operations, oldHash) {
+            const opList = document.getElementById('opList');
+            opList.innerHTML = '';
+
+            // Add old hash
+            const oldHashEl = document.createElement('div');
+            oldHashEl.style.color = '#888';
+            oldHashEl.style.marginBottom = '10px';
+            oldHashEl.textContent = `Old: ${formatHash(oldHash)}`;
+            opList.appendChild(oldHashEl);
+
+            operations.forEach((op, idx) => {
+                const opEl = document.createElement('div');
+                opEl.className = `op-item ${op.type}`;
+                opEl.style.animationDelay = `${idx * 0.15}s`;
+
+                if (op.type === 'result') {
+                    opEl.innerHTML = `<strong>${op.text}</strong>`;
+                } else {
+                    const symbol = op.type === 'xor-out' ? '⊕' : '⊕';
+                    const prefix = op.type === 'xor-out' ? '−' : '+';
+                    opEl.innerHTML = `${prefix} ${op.text}<br><span style="font-size: 0.75rem; opacity: 0.7;">&nbsp;&nbsp;${formatHash(op.value)}</span>`;
+                }
+
+                opList.appendChild(opEl);
+            });
+
+            // Add operation count
+            const countEl = document.createElement('div');
+            countEl.style.color = '#4ade80';
+            countEl.style.marginTop = '15px';
+            countEl.style.fontSize = '0.85rem';
+            const opCount = operations.length - 1; // Exclude result
+            countEl.textContent = `Total: ${opCount} XOR operation${opCount > 1 ? 's' : ''} (not 64!)`;
+            opList.appendChild(countEl);
+        }
+
+        function updateHashDisplay() {
+            document.getElementById('hashValue').textContent = formatHash(currentHash);
+        }
+
+        function resetBoard() {
+            initBoard();
+        }
+
+        // Initialize on load
+        initBoard();
+    </script>
+</body>
+</html>

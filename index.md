@@ -12,6 +12,13 @@ A collection of articles exploring software performance optimization techniques 
 
 <div class="feature__item">
   <div class="archive__item">
+    <h3 class="archive__item-title"><a href="involutions.html">Involutions: The License to Update in O(1)</a></h3>
+    <p class="archive__item-excerpt">Why Zobrist hashing updates a chessboard in constant time, and the property that makes incremental computation possible.</p>
+  </div>
+</div>
+
+<div class="feature__item">
+  <div class="archive__item">
     <h3 class="archive__item-title"><a href="distributed-id-generation.html">Beyond Snowflake: A Problem-Solver's Guide to Distributed ID Generation</a></h3>
     <p class="archive__item-excerpt">How memory allocators teach us to generate unique IDs at scale—and how to discover solutions, not just memorize them.</p>
   </div>
