@@ -7,7 +7,7 @@ toc_sticky: true
 math: true
 ---
 
-*Also published on [Software Bits](https://softwarebits.substack.com/) — subscribe for updates.*
+*Originally published on [Software Bits](https://softwarebits.substack.com/) — subscribe for updates.*
 
 ---
 
@@ -194,13 +194,13 @@ The hash doesn't depend on the order pieces were added. Two positions with the s
 
 With addition/subtraction, values can grow unboundedly or cluster around certain ranges. XOR keeps the hash uniformly distributed across the full 64-bit range.
 
-| Operation | Involution? | Commutative? | Bounded? | Bit-independent? |
-|-----------|-------------|--------------|----------|------------------|
-| XOR | ✓ | ✓ | ✓ | ✓ |
-| Addition/Subtraction | ✓ | ✓ | ✗ | ✗ |
+| Operation | Self-inverse? | Commutative? | Bounded? | Bit-independent? |
+|-----------|---------------|--------------|----------|------------------|
+| XOR | ✓ (a⊕a=0) | ✓ | ✓ | ✓ |
+| Addition/Subtraction | ✗ (need inverse op) | ✓ | ✗ | ✗ |
 | Multiplication | ✗ | ✓ | ✗ | ✗ |
 
-XOR wins on every criterion that matters for hashing.
+XOR is unique: adding and removing use the *same* operation. With addition, you must subtract to undo—a different operation that requires knowing what was added.
 
 ---
 
@@ -262,6 +262,8 @@ The same principle applies anywhere you need incremental hash updates.
 **Sliding window over a byte stream:**
 
 ```python
+from collections import deque
+
 def rolling_xor_hash(window_size):
     h = 0
     buffer = deque()
@@ -463,13 +465,13 @@ Reach for the algebra.
 
 ---
 
-*Next in this series: [Associativity: The One Property That Makes FlashAttention Possible](associativity.html)*
+*See also: [Associativity: The One Property That Makes FlashAttention Possible](associativity.html)*
 
 ---
 
 ## Further Reading
 
-- [Zobrist, "A New Hashing Method with Application for Game Playing" (1970)](https://www.cs.wisc.edu/techreports/1970/TR88.pdf) — The original paper
+- [Zobrist, "A New Hashing Method with Application for Game Playing" (1970)](https://research.cs.wisc.edu/techreports/1970/TR88.pdf) — The original paper (also reprinted in ICCA Journal, Vol. 13, No. 2, 1990)
 - [Chessprogramming Wiki: Zobrist Hashing](https://www.chessprogramming.org/Zobrist_Hashing) — Comprehensive reference for chess applications
 - [Tridgell & Mackerras, "The rsync Algorithm" (1996)](https://rsync.samba.org/tech_report/) — How rsync achieves efficient file synchronization
 - [Shapiro et al., "Conflict-free Replicated Data Types" (2011)](https://hal.inria.fr/inria-00609399/document) — CRDTs and commutative operations
